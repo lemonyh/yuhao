@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuhao.shop.model.User">
+	<insert id="add" parameterType="User">
+		insert into t_user
+		(username,password,nickname,type) value
+		(#{username},#{password},#{nickname},#{type})
+  	</insert>
+	<update id="update" parameterType="User">
+		update t_user set
+		nickname=#{nickname},password=#{password},type=#{type} where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from t_user where
+		id=#{id}
+	</delete>
+	<select id="load" parameterType="int" resultType="User">
+		select * from t_user where id=#{id}
+	</select>
+	<select id="load_by_name" parameterType="String" resultType="User">
+		select * from t_user where username=#{username}
+	</select>
+	<select id="find" resultType="User">
+		select *from t_user
+		<if test="name!=null">where (username like #{name} or nickname like #{name})</if>
+		<if test="sort!=null"> order by ${sort}
+		<choose>
+			<when test="order!=null">${order}</when>
+			<otherwise>asc</otherwise>
+		</choose>
+		</if>
+		limit #{pageOffset},#{pageSize}
+	</select>
+	<select id="find_count" parameterType="map" resultType="int">
+		select count(*) from t_user
+		<if test="name!=null">where (username like #{name} or nickname like #{name})
+		</if>
+	</select>
+</mapper>
